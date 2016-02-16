@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.*?>
+<?import javafx.scene.shape.*?>
+<?import java.lang.*?>
+<?import java.util.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<AnchorPane id="AnchorPane" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="simuladorcolasprioridad.Quantum">
+   <children>
+      <ProgressBar fx:id="quantum" layoutX="65.0" layoutY="41.0" opacity="0.54" prefHeight="18.0" prefWidth="471.0" progress="0.45" AnchorPane.leftAnchor="65.0" AnchorPane.rightAnchor="64.0" />
+      <Button layoutX="141.0" layoutY="104.0" mnemonicParsing="false" onAction="#detener" text="Button" />
+   </children>
+</AnchorPane>
