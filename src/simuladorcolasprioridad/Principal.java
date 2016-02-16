@@ -32,6 +32,7 @@ public class Principal extends Application {
             primaryStage.setScene(scene);
             primaryStage.show();
 
+            //carga la clase controladora del Quantum
             Quantum barra = loader.getController();
             barra.setVelocidad(10);
             barra.start();
