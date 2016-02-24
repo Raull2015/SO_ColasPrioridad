@@ -19,27 +19,38 @@ import javafx.stage.Stage;
  * @author Raul
  */
 public class Principal extends Application {
-
+    //clase controladora del Quantum
+    private Quantum quantumControl;
+    
+    private int velocidad = 10; // en milisegundos * 100
+    
     @Override
     public void start(Stage primaryStage) {
-
+        
         try {
+            //carga la scene de Interfaz.fxml
             FXMLLoader loader = new FXMLLoader();
             loader.setLocation(Principal.class.getResource("Interfaz.fxml"));
             AnchorPane raiz = (AnchorPane) loader.load();
 
+            //define la scene principal
             Scene scene = new Scene(raiz);
             primaryStage.setScene(scene);
             primaryStage.show();
 
             //carga la clase controladora del Quantum
-            Quantum barra = loader.getController();
-            barra.setVelocidad(10);
-            barra.start();
+            quantumControl = loader.getController();
+            quantumControl.setVelocidad(velocidad);
+           
 
         } catch (IOException ex) {
             Logger.getLogger(Principal.class.getName()).log(Level.SEVERE, null, ex);
         }
+    }
+    
+    @Override
+    public void stop(){
+        quantumControl.detener();
     }
 
     public Principal() {
