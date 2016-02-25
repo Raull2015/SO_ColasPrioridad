@@ -16,6 +16,7 @@ import javafx.scene.control.ProgressBar;
 public class AnimBarra extends Thread {
     
     private ProgressBar quantum;
+    private ProgressBar proceso;
     
     private boolean encendido;
     private final int velocidad;
