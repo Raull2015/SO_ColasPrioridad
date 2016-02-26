@@ -18,6 +18,7 @@ import javafx.stage.Stage;
  *
  * @author Raul
  */
+
 public class Principal extends Application {
     //clase controladora del Quantum
     private Quantum quantumControl;
