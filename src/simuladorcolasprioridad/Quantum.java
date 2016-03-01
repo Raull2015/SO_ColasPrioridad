@@ -6,8 +6,10 @@
 package simuladorcolasprioridad;
 
 import javafx.fxml.FXML;
+import javafx.scene.control.Label;
 import javafx.scene.control.ProgressBar;
 import javafx.scene.control.Slider;
+import javafx.scene.control.TextField;
 import javafx.scene.control.ToggleButton;
 
 /**
@@ -19,17 +21,27 @@ public class Quantum {
     @FXML
     private ProgressBar quantum; // barra de Quatum
     @FXML
+    private ProgressBar proceso; //barra de proceso
+    @FXML
     private ToggleButton botonIA; // boton de iniciar/apagar
     @FXML
     private Slider sliderVel; // Slider que controla la velocidad
+    @FXML 
+    private TextField nombreProceso; //TextField donde se ingresa el nombre del proceso
+    @FXML
+    private Label procesoEjec;// Label que indica el proceso en ejecucion
+    @FXML
+    private Label info;//label que despliega informacion
+    
    
     private AnimBarra barra;  //hilo que anima la barra de Quantum  
     private boolean encendido;  //si el hilo que anima la barra de quantum esta encendido  
     private int velocidad; //velocidad del quantum
+    private TablaProcesos tabla;
     
     public Quantum() {
         super();
-        this.encendido = false;     
+        this.encendido = false;   
     }
 
     public int getVelocidad() {
@@ -38,6 +50,7 @@ public class Quantum {
 
     public void setVelocidad(int velocidad) {
         this.velocidad = velocidad;
+        this.tabla = new TablaProcesos(velocidad);
     }
 
     public boolean isEncendido() {
@@ -69,9 +82,11 @@ public class Quantum {
         if(this.encendido == false){
             this.velocidad = (int)sliderVel.getValue() * 10; //obtiene el valor de velocidad del slider de velocidad
             sliderVel.setDisable(true);
-            barra = new AnimBarra(this.velocidad, this.quantum);
+            barra = new AnimBarra(this.velocidad, this.quantum, this.proceso, this.procesoEjec);
+            barra.setTabla(tabla);
             barra.start();
             this.encendido = true;
+            info.setText("Simulacion Iniciada");
         }
     }
     
@@ -84,12 +99,20 @@ public class Quantum {
               barra.detener();
               this.encendido = false;
               sliderVel.setDisable(false);
+               info.setText("Simulacion Detenida");
           }
+    }
+    
+    @FXML
+    public void agregarProceso(){
+        tabla.crear_proceso(nombreProceso.getText().trim(), velocidad);
+        info.setText("El proceso ha sido Creado");
+        nombreProceso.clear();
     }
     
     
     public void debug(){
-        System.out.println(sliderVel.getValue());
+        System.out.println(tabla.toString());
     }
     
 

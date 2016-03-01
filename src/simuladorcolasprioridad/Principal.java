@@ -42,6 +42,7 @@ public class Principal extends Application {
             //carga la clase controladora del Quantum
             quantumControl = loader.getController();
             quantumControl.setVelocidad(velocidad);
+             
            
 
         } catch (IOException ex) {

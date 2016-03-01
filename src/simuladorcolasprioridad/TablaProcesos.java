@@ -14,14 +14,16 @@ import java.util.Random;
  */
 public class TablaProcesos {
 
-    ArrayList<Proceso> listaP;
+    private ArrayList<Proceso> listaP;
     private int nuevoId;
     private Proceso procesoAct;
     private int numeroEjec;
+    private int velocidad;
 
-    public TablaProcesos() {
-        listaP = new ArrayList<>();
-        nuevoId = 1;
+    public TablaProcesos(int velocidad) {
+        this.velocidad = velocidad * 100;
+        this.listaP = new ArrayList<>();
+        this.nuevoId = 1;
     }
 
     public ArrayList<Proceso> getListaP() {
@@ -32,6 +34,9 @@ public class TablaProcesos {
         return procesoAct;
     }
     
+    public String getNombreProcesoAct(){
+        return procesoAct.getNombre();
+    }
 
     public void crear_proceso(String nombre, int velocidad) {
 
@@ -40,24 +45,44 @@ public class TablaProcesos {
         corregir_prioridades();
         procesoAct = nuevoP;
         listaP.add(nuevoP);
-
         nuevoId++;
     }
 
-    public void corregir_prioridades() {
+    /**
+     * Corrige la prioridad de todos los demas procesos, antes de agregar uno
+     * nuevo
+     */
+    private void corregir_prioridades() {
         for (Proceso proceso : listaP) {
-            proceso.setPrioridad(proceso.getPrioridad() + 1);
+            if (proceso.getPrioridad() == 0) {
+                proceso.setPrioridad(1);
+            }
         }
 
     }
 
+    /**
+     * Destruye el proceso
+     *
+     * @param id
+     */
     public void destruir_proceso(int id) {
         for (Proceso proceso : listaP) {
             if (proceso.getId() == id) {
                 listaP.remove(proceso);
             }
         }
+    }
 
+    /**
+     * Crea un proceso de interrupcion
+     *
+     * @param velocidad El tiempo que dura el Quantum
+     */
+    public void crear_interrupcion(int velocidad) {
+        Random rm = new Random();
+        Proceso interrupcion = new Proceso("Interrupcion", (rm.nextInt(1) + 1) * velocidad);
+        this.procesoAct = interrupcion;
     }
 
     /**
@@ -80,8 +105,10 @@ public class TablaProcesos {
 
     /**
      * Calcula el tiempo en que el proceso se bloqueara.
+     *
      * @param velocidad El tiempo en milisegundos que dura el Quantum.
-     * @return -1 indica que el proceso no se bloqueó de lo contrario es el momento en el que se va a bloquear.
+     * @return -1 indica que el proceso no se bloqueó de lo contrario es el
+     * momento en el que se va a bloquear.
      */
     public int tiempo_bloqueo(int velocidad) {
         Random rm = new Random();
@@ -94,27 +121,8 @@ public class TablaProcesos {
     }
 
     /**
-     * Bloquea el proceso Actual.
-     */
-    public void bloquear() {
-        procesoAct.setBloqueado(true);
-    }
-
-    /**
-     * Desbloquea el proceso.
-     * @param id del proceso que va a desbloquear.
-     */
-    public void desbloquear(int id) {
-
-        for (Proceso proc : listaP) {
-            if (proc.getId() == id) {
-                proc.setBloqueado(false);
-            }
-        }
-    }
-
-    /**
-     * Revisa la Prioridad y en base a ella elige el siguiente proceso a ejecutar.
+     * Revisa la Prioridad y en base a ella elige el siguiente proceso a
+     * ejecutar.
      */
     public void avanzar() {
 
@@ -146,6 +154,79 @@ public class TablaProcesos {
             }
 
         }
+        
+    }
+
+    /**
+     * Aumenta el tiempo de bloqueo para todo proceso bloqueado
+     *
+     * @param tiempo - el tiempo que aumenta
+     */
+    public void aum_tiempo_bloqueo(int tiempo) {
+        for (Proceso proc : listaP) {
+            if (proc.isBloqueado() == true) {
+                proc.agregarTiempoBloqueo(tiempo);
+            }
+        }
+    }
+
+    /**
+     * Desbloquea todo proceso para el que su tiempo de bloqueo se haya cumplido
+     */
+    public void desbloquear_procesos() {
+        for (Proceso proc : listaP) {
+            if (proc.isBloqueado() == true) {
+                if (proc.getTiempoBloqueo() <= proc.gettActualBloqueo()) {
+                    proc.setBloqueado(false);
+                }
+            }
+        }
+    }
+
+    /**
+     * Bloquea el proceso Actual.
+     */
+    public void bloquear() {
+        procesoAct.setBloqueado(true);
+    }
+
+    /**
+     * aumenta el tiempo en ejecucion del proceso actual
+     *
+     * @param tiempo - el tiempo que aumenta (en milisegundos)
+     */
+    public void aum_tiempo_ejec(int tiempo) {
+        if (procesoAct.isBloqueado() == false) {
+            procesoAct.agregarDuracionActual(tiempo);
+        }
+    }
+    
+    /**
+     * @return - La cantidad de procesos en la lista 
+     */
+    public int tamaño(){
+        return listaP.size();
+    }
+    
+    /**
+     * Retira los procesos que ya han cumplido su tiempo de ejecucion
+     */
+    public void terminar_procesos(){
+        for (Proceso proc : listaP) {
+            if(proc.getDuracionTotal() <= proc.getDuracionActual()){
+                listaP.remove(proc);
+                return;
+            }
+        }
+    }
+    
+    @Override
+    public String toString(){
+        String lista = "";
+        for (Proceso proc : listaP) {
+         lista += proc.toString() + "\n";
+        }
+        return lista;
     }
 
 }

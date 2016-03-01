@@ -15,9 +15,11 @@ import java.util.Random;
 public class Proceso {
     private final String nombre;
     private final int id;
-    private final int duracion_total;
-    private int duracion_actual;
+    private final int duracionTotal;
+    private int duracionActual;
     private boolean bloqueado;
+    private int tiempoBloqueo;
+    private int tActualBloqueo;
     private int prioridad;
 
     
@@ -25,7 +27,13 @@ public class Proceso {
         this.nombre = nombre;
         this.id = id;
         Random rm = new Random();
-        duracion_total = (rm.nextInt(9)+1)*(velocidad*100);
+        this.duracionTotal = (rm.nextInt(9)+1)*(velocidad*100);
+    }
+    
+    public Proceso(String nombre, int duracion_total){
+        this.id = -1;
+        this.nombre = nombre;
+        this.duracionTotal = duracion_total;
     }
 
     public String getNombre() {
@@ -36,16 +44,16 @@ public class Proceso {
         return id;
     }
 
-    public int getDuracion_total() {
-        return duracion_total;
+    public int getDuracionTotal() {
+        return duracionTotal;
     }
 
-    public int getDuracion_actual() {
-        return duracion_actual;
+    public int getDuracionActual() {
+        return duracionActual;
     }
 
-    public void setDuracion_actual(int duracion_actual) {
-        this.duracion_actual = duracion_actual;
+    public void setDuracionActual(int duracion_actual) {
+        this.duracionActual = duracion_actual;
     }
 
     public boolean isBloqueado() {
@@ -63,9 +71,32 @@ public class Proceso {
     public void setPrioridad(int prioridad) {
         this.prioridad = prioridad;
     }
+
+    public int getTiempoBloqueo() {
+        return tiempoBloqueo;
+    }
+
+    public int gettActualBloqueo() {
+        return tActualBloqueo;
+    }
+
+    public void settActualBloqueo(int tActualBloqueo) {
+        this.tActualBloqueo = tActualBloqueo;
+    }
     
-    public void getPorcentaje(){
-        double por = duracion_actual/ duracion_total;
+    public void agregarTiempoBloqueo(int tiempo){
+        this.tActualBloqueo = this.tActualBloqueo + tiempo;
+    }
+    
+    public void agregarDuracionActual(int tiempo){
+        this.duracionActual = this.duracionActual + tiempo;
+    }
+    public double getPorcentaje(){
+        return (double)duracionActual / (double)duracionTotal;
+    }
+    @Override
+    public String toString(){
+        return id + " " + nombre + " actual " + duracionActual + " total " + duracionTotal + " prioridad " + prioridad; 
     }
     
 }
