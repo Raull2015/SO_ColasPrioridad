@@ -41,6 +41,8 @@ public class Proceso {
         this.id = new SimpleIntegerProperty(-1);
         this.nombre = new SimpleStringProperty(nombre);
         this.duracionTotal = duracion_total;
+        this.prioridad= new SimpleIntegerProperty(-1);
+        this.bloqueado = new SimpleBooleanProperty(false);
     }
 
     public String getNombre() {

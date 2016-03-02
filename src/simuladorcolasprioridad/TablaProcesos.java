@@ -82,6 +82,7 @@ public class TablaProcesos {
     public void crear_interrupcion(int velocidad) {
         Random rm = new Random();
         Proceso interrupcion = new Proceso("Interrupcion", (rm.nextInt(1) + 1) * velocidad);
+        listaP.add(interrupcion);
         this.procesoAct = interrupcion;
     }
 
@@ -92,13 +93,13 @@ public class TablaProcesos {
      * @return -1 indica que no ocurre una interrupción. De lo contrario
      * devuelve el momento en que se genero la interrupcion.
      */
-    public int tiempo_interrupcion(int velocidad) {
+    public int tiempo_interrupcion() {
         Random rm = new Random();
         int probabilidad = rm.nextInt(99) + 1;
         if (probabilidad < 75) {
             return -1;
         } else {
-            return rm.nextInt(999) + 1;
+            return rm.nextInt(99) + 1;
         }
 
     }
@@ -141,7 +142,7 @@ public class TablaProcesos {
                     }
                 }
             }
-        } else {
+        } else if(prioridad == 1) {
             numeroEjec++;
             if (numeroEjec == 1) {
                 for (Proceso proceso : listaP) {
@@ -153,6 +154,9 @@ public class TablaProcesos {
                 }
             }
 
+        }
+        else{
+            
         }
         
     }
@@ -224,6 +228,13 @@ public class TablaProcesos {
                             procesoAct = proc2;
                             numeroEjec = 0;
                             return;
+                        }
+                    }
+                }
+                else if(proc.getPrioridad() == -1){
+                    for (Proceso proc2 : listaP) {
+                        if(proc2.getPrioridad() == 0){
+                            procesoAct = proc2;
                         }
                     }
                 }

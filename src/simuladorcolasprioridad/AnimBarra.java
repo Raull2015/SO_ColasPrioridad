@@ -47,9 +47,6 @@ public class AnimBarra extends Thread {
         this.controlador = controlador;
     }
 
-    
-    
-
     @Override
     public void run() {
 
@@ -63,8 +60,24 @@ public class AnimBarra extends Thread {
             });
 
             while (encendido == true) {
+                int interrupcion = -1;
+                if (tabla.getProcesoAct().getPrioridad() != -1) {
+                    interrupcion = tabla.tiempo_interrupcion();
+                }
+
                 for (int i = 1; i <= 100; i++) {
                     try {
+                        if (interrupcion != -1) {
+                            if (interrupcion == i) {
+                                Platform.runLater(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        //que en la aplicacion principal avise que  ocurrio una interrupcion
+                                    }
+                                });
+
+                            }
+                        }
                         quantum.setProgress(numeros[i]);
                         proceso.setProgress(tabla.getProcesoAct().getPorcentaje());
                         AnimBarra.sleep(velocidad);
@@ -76,11 +89,13 @@ public class AnimBarra extends Thread {
 
                 }
                 //cuando termina un Quantum
-                
-                
+
                 tabla.terminar_procesos();
                 tabla.avanzar();
-                
+                if (interrupcion != -1) {
+                    tabla.crear_interrupcion(velocidad * 100);
+                }
+
                 Platform.runLater(new Runnable() {
                     @Override
                     public void run() {
@@ -88,6 +103,9 @@ public class AnimBarra extends Thread {
                         controlador.mostrar();
                     }
                 });
+                if(tabla.tamaño() == 0){
+                    encendido = false;
+                }
             }
         }
     }

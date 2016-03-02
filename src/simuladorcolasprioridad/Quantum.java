@@ -64,6 +64,8 @@ public class Quantum {
         super();
         this.encendido = false; 
         lista = FXCollections.observableArrayList();
+       
+       
     }
 
     public int getVelocidad() {
@@ -73,6 +75,15 @@ public class Quantum {
     public void setVelocidad(int velocidad) {
         this.velocidad = velocidad;
         this.tabla = new TablaProcesos(velocidad);
+        
+        //datos de prueba
+         tabla.crear_proceso("FireFox", velocidad);
+        tabla.crear_proceso("Chrome", velocidad);
+        tabla.crear_proceso("Explorer", velocidad);
+        tabla.crear_proceso("Safari", velocidad);
+        tabla.crear_proceso("Opera", velocidad);
+        tabla.crear_proceso("Maxthon", velocidad);
+        mostrar();
     }
 
     public boolean isEncendido() {
