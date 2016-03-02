@@ -1,6 +1,12 @@
 package simuladorcolasprioridad;
 
 import java.util.Random;
+import javafx.beans.property.BooleanProperty;
+import javafx.beans.property.IntegerProperty;
+import javafx.beans.property.SimpleBooleanProperty;
+import javafx.beans.property.SimpleIntegerProperty;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.StringProperty;
 
 /*
  * To change this license header, choose License Headers in Project Properties.
@@ -13,35 +19,44 @@ import java.util.Random;
  * @author Brandon
  */
 public class Proceso {
-    private final String nombre;
-    private final int id;
+    private final StringProperty nombre;
+    private final IntegerProperty id;
     private final int duracionTotal;
     private int duracionActual;
-    private boolean bloqueado;
+    private BooleanProperty bloqueado;
     private int tiempoBloqueo;
     private int tActualBloqueo;
-    private int prioridad;
+    private IntegerProperty prioridad;
 
     
     public Proceso(String nombre, int id, int velocidad) {
-        this.nombre = nombre;
-        this.id = id;
+        this.nombre = new SimpleStringProperty(nombre);
+        this.id = new SimpleIntegerProperty( id);
+        this.bloqueado = new SimpleBooleanProperty( false);
         Random rm = new Random();
-        this.duracionTotal = (rm.nextInt(9)+1)*(velocidad*100);
+        this.duracionTotal = (rm.nextInt(15)+3)*(velocidad*100);
     }
     
     public Proceso(String nombre, int duracion_total){
-        this.id = -1;
-        this.nombre = nombre;
+        this.id = new SimpleIntegerProperty(-1);
+        this.nombre = new SimpleStringProperty(nombre);
         this.duracionTotal = duracion_total;
     }
 
     public String getNombre() {
+        return nombre.get();
+    }
+    
+    public StringProperty gNombre(){
         return nombre;
     }
   
     public int getId() {
-        return id;
+        return id.get();
+    }
+    
+    public StringProperty gId(){
+        return new SimpleStringProperty(String.valueOf(id.get()));
     }
 
     public int getDuracionTotal() {
@@ -57,19 +72,33 @@ public class Proceso {
     }
 
     public boolean isBloqueado() {
-        return bloqueado;
+        return bloqueado.get();
+    }
+    
+    public StringProperty gBloqueado(){
+        if(bloqueado.get() == true){
+            return new SimpleStringProperty("Bloqueado");
+        }
+        else{
+            return new SimpleStringProperty("Activo");
+        }
+        
     }
 
     public void setBloqueado(boolean bloqueado) {
-        this.bloqueado = bloqueado;
+        this.bloqueado = new SimpleBooleanProperty(bloqueado);
     }
 
     public int getPrioridad() {
-        return prioridad;
+        return prioridad.get();
+    }
+    
+    public StringProperty gPrioridad(){
+        return new SimpleStringProperty(String.valueOf(prioridad.get()));
     }
 
     public void setPrioridad(int prioridad) {
-        this.prioridad = prioridad;
+        this.prioridad = new SimpleIntegerProperty(  prioridad);
     }
 
     public int getTiempoBloqueo() {

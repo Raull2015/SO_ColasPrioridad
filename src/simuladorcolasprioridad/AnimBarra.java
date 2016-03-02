@@ -22,6 +22,7 @@ public class AnimBarra extends Thread {
     private Label procesoEjec;
 
     private TablaProcesos tabla;
+    private Quantum controlador;
 
     private boolean encendido;
     private final int velocidad;
@@ -42,6 +43,13 @@ public class AnimBarra extends Thread {
         this.tabla = tabla;
     }
 
+    public void setControlador(Quantum controlador) {
+        this.controlador = controlador;
+    }
+
+    
+    
+
     @Override
     public void run() {
 
@@ -50,6 +58,7 @@ public class AnimBarra extends Thread {
                 @Override
                 public void run() {
                     procesoEjec.setText(tabla.getNombreProcesoAct());
+                    controlador.mostrar();
                 }
             });
 
@@ -68,14 +77,15 @@ public class AnimBarra extends Thread {
                 }
                 //cuando termina un Quantum
                 
-                tabla.avanzar();
-                tabla.terminar_procesos();
                 
+                tabla.terminar_procesos();
+                tabla.avanzar();
                 
                 Platform.runLater(new Runnable() {
                     @Override
                     public void run() {
                         procesoEjec.setText(tabla.getNombreProcesoAct());
+                        controlador.mostrar();
                     }
                 });
             }

@@ -5,10 +5,17 @@
  */
 package simuladorcolasprioridad;
 
+import javafx.beans.property.IntegerProperty;
+import javafx.collections.ObservableList;
+import javafx.collections.FXCollections;
+import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
+import javafx.scene.control.ListView;
 import javafx.scene.control.ProgressBar;
 import javafx.scene.control.Slider;
+import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.control.ToggleButton;
 
@@ -32,7 +39,21 @@ public class Quantum {
     private Label procesoEjec;// Label que indica el proceso en ejecucion
     @FXML
     private Label info;//label que despliega informacion
+    @FXML
+    private TableView<Proceso> mayorPrioridad; // tabla que contiene datos del proceso con mayor prioridad
+     @FXML
+    private TableColumn<Proceso, String> id;
+    @FXML
+    private TableColumn<Proceso, String> nombre;
+    @FXML
+    private TableColumn<Proceso, String> estado;
+    @FXML
+    private TableColumn<Proceso, String> prioridad;
+    @FXML
+    private ListView menorPrioridad; // lista con los procesos de menor prioridad
     
+    ObservableList<Proceso> lista ;
+    ObservableList<String> listaMenor;
    
     private AnimBarra barra;  //hilo que anima la barra de Quantum  
     private boolean encendido;  //si el hilo que anima la barra de quantum esta encendido  
@@ -41,7 +62,8 @@ public class Quantum {
     
     public Quantum() {
         super();
-        this.encendido = false;   
+        this.encendido = false; 
+        lista = FXCollections.observableArrayList();
     }
 
     public int getVelocidad() {
@@ -80,10 +102,12 @@ public class Quantum {
      */
     public void iniciar(){
         if(this.encendido == false){
+            
             this.velocidad = (int)sliderVel.getValue() * 10; //obtiene el valor de velocidad del slider de velocidad
             sliderVel.setDisable(true);
             barra = new AnimBarra(this.velocidad, this.quantum, this.proceso, this.procesoEjec);
             barra.setTabla(tabla);
+            barra.setControlador(this);
             barra.start();
             this.encendido = true;
             info.setText("Simulacion Iniciada");
@@ -99,6 +123,7 @@ public class Quantum {
               barra.detener();
               this.encendido = false;
               sliderVel.setDisable(false);
+              tabla.limpiar();
                info.setText("Simulacion Detenida");
           }
     }
@@ -108,6 +133,7 @@ public class Quantum {
         tabla.crear_proceso(nombreProceso.getText().trim(), velocidad);
         info.setText("El proceso ha sido Creado");
         nombreProceso.clear();
+        mostrar();
     }
     
     
@@ -115,5 +141,29 @@ public class Quantum {
         System.out.println(tabla.toString());
     }
     
+    public void mostrar(){
+        
+        for(Proceso pro : tabla.getListaP()){
+            if(pro.getPrioridad() == 0){
+                lista =  FXCollections.observableArrayList(pro);
+            }
+        
+        }
+        listaMenor =  FXCollections.observableArrayList();
+        for(Proceso pro : tabla.getListaP()){
+            if(pro.getPrioridad() == 1){
+                listaMenor.add(pro.getId() + "       " + pro.getNombre() + "              " + pro.gBloqueado().get() + "               " + pro.getPrioridad());
+            }
+        
+        }
+        
+        id.setCellValueFactory(cellData -> cellData.getValue().gId());
+        nombre.setCellValueFactory(cellData -> cellData.getValue().gNombre());
+        estado.setCellValueFactory(cellData -> cellData.getValue().gBloqueado());
+        prioridad.setCellValueFactory(cellData -> cellData.getValue().gPrioridad());
+        
+        mayorPrioridad.setItems(lista);
+        menorPrioridad.setItems(listaMenor);
+    }
 
 }

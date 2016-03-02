@@ -215,9 +215,26 @@ public class TablaProcesos {
         for (Proceso proc : listaP) {
             if(proc.getDuracionTotal() <= proc.getDuracionActual()){
                 listaP.remove(proc);
+                
+                if(proc.getPrioridad() == 0){
+                    
+                    for (Proceso proc2 : listaP) {
+                        if(proc2.getId() != -1){
+                            proc2.setPrioridad(0);
+                            procesoAct = proc2;
+                            numeroEjec = 0;
+                            return;
+                        }
+                    }
+                }
                 return;
+                
             }
         }
+    }
+    public void limpiar(){
+        listaP.clear();
+        numeroEjec = -1;
     }
     
     @Override
