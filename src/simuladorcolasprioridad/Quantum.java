@@ -5,9 +5,7 @@
  */
 package simuladorcolasprioridad;
 
-import javafx.beans.property.IntegerProperty;
 import javafx.collections.ObservableList;
-import javafx.collections.FXCollections;
 import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
@@ -40,6 +38,10 @@ public class Quantum {
     @FXML
     private Label info;//label que despliega informacion
     @FXML
+    private Label avisoInt;//label que avisa si ocurre una interrupcion 
+    @FXML
+    private Label avisoBloq;//label que avisa si ocurre un bloqueo
+    @FXML
     private TableView<Proceso> mayorPrioridad; // tabla que contiene datos del proceso con mayor prioridad
      @FXML
     private TableColumn<Proceso, String> id;
@@ -50,7 +52,8 @@ public class Quantum {
     @FXML
     private TableColumn<Proceso, String> prioridad;
     @FXML
-    private ListView menorPrioridad; // lista con los procesos de menor prioridad
+    private ListView menorPrioridad; // lista con los procesos de menor 
+    
     
     ObservableList<Proceso> lista ;
     ObservableList<String> listaMenor;
@@ -75,15 +78,6 @@ public class Quantum {
     public void setVelocidad(int velocidad) {
         this.velocidad = velocidad;
         this.tabla = new TablaProcesos(velocidad);
-        
-        //datos de prueba
-         tabla.crear_proceso("FireFox", velocidad);
-        tabla.crear_proceso("Chrome", velocidad);
-        tabla.crear_proceso("Explorer", velocidad);
-        tabla.crear_proceso("Safari", velocidad);
-        tabla.crear_proceso("Opera", velocidad);
-        tabla.crear_proceso("Maxthon", velocidad);
-        mostrar();
     }
 
     public boolean isEncendido() {
@@ -118,6 +112,8 @@ public class Quantum {
             sliderVel.setDisable(true);
             barra = new AnimBarra(this.velocidad, this.quantum, this.proceso, this.procesoEjec);
             barra.setTabla(tabla);
+            barra.setAvisoInt(avisoInt);
+            barra.setAvisoBloq(avisoBloq);
             barra.setControlador(this);
             barra.start();
             this.encendido = true;
@@ -150,6 +146,13 @@ public class Quantum {
     
     public void debug(){
         System.out.println(tabla.toString());
+        tabla.crear_proceso("FireFox", velocidad);
+        tabla.crear_proceso("Chrome", velocidad);
+        tabla.crear_proceso("Explorer", velocidad);
+        tabla.crear_proceso("Safari", velocidad);
+        tabla.crear_proceso("Opera", velocidad);
+        tabla.crear_proceso("Maxthon", velocidad);
+        mostrar();
     }
     
     public void mostrar(){
@@ -163,7 +166,7 @@ public class Quantum {
         listaMenor =  FXCollections.observableArrayList();
         for(Proceso pro : tabla.getListaP()){
             if(pro.getPrioridad() == 1){
-                listaMenor.add(pro.getId() + "       " + pro.getNombre() + "              " + pro.gBloqueado().get() + "               " + pro.getPrioridad());
+                listaMenor.add(pro.getId() + "             " + pro.getNombre() + "                        " + pro.gBloqueado().get() + "               " + pro.getPrioridad());
             }
         
         }

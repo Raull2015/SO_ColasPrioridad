@@ -20,6 +20,8 @@ public class AnimBarra extends Thread {
     private ProgressBar quantum;
     private ProgressBar proceso;
     private Label procesoEjec;
+    private Label avisoInt;
+    private Label avisoBloq;
 
     private TablaProcesos tabla;
     private Quantum controlador;
@@ -47,6 +49,14 @@ public class AnimBarra extends Thread {
         this.controlador = controlador;
     }
 
+    public void setAvisoInt(Label avisoInt) {
+        this.avisoInt = avisoInt;
+    }
+
+    public void setAvisoBloq(Label avisoBloq) {
+        this.avisoBloq = avisoBloq;
+    }
+
     @Override
     public void run() {
 
@@ -60,28 +70,58 @@ public class AnimBarra extends Thread {
             });
 
             while (encendido == true) {
+                //interrupciones
                 int interrupcion = -1;
                 if (tabla.getProcesoAct().getPrioridad() != -1) {
                     interrupcion = tabla.tiempo_interrupcion();
+
+                    Platform.runLater(new Runnable() {
+                        @Override
+                        public void run() {
+                            avisoInt.setText("");
+                        }
+                    });
+                }
+                //bloqueo
+                int bloqueo = -1;
+                if (tabla.getProcesoAct().getPrioridad() != -1) {
+                    bloqueo = tabla.tiempo_bloqueo();
                 }
 
                 for (int i = 1; i <= 100; i++) {
                     try {
+                        //interrupcion
                         if (interrupcion != -1) {
                             if (interrupcion == i) {
                                 Platform.runLater(new Runnable() {
                                     @Override
                                     public void run() {
                                         //que en la aplicacion principal avise que  ocurrio una interrupcion
+                                        avisoInt.setText("Ha Ocurrido Una Interrupcion");
                                     }
                                 });
 
+                            }
+                        }
+                        //bloqueo
+                        if (bloqueo != -1) {
+                            if (bloqueo == i) {
+                                tabla.bloquear();
+                                Platform.runLater(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        //que en la aplicacion principal avise que  ocurrio una interrupcion
+                                        avisoBloq.setText("Ha Ocurrido Un Bloqueo");
+                                        controlador.mostrar();
+                                    }
+                                });
                             }
                         }
                         quantum.setProgress(numeros[i]);
                         proceso.setProgress(tabla.getProcesoAct().getPorcentaje());
                         AnimBarra.sleep(velocidad);
                         tabla.aum_tiempo_ejec(velocidad);
+                        tabla.aum_tiempo_bloqueo(velocidad);
 
                     } catch (InterruptedException ex) {
                         Logger.getLogger(Quantum.class.getName()).log(Level.SEVERE, null, ex);
@@ -91,6 +131,7 @@ public class AnimBarra extends Thread {
                 //cuando termina un Quantum
 
                 tabla.terminar_procesos();
+                tabla.desbloquear_procesos();
                 tabla.avanzar();
                 if (interrupcion != -1) {
                     tabla.crear_interrupcion(velocidad * 100);
@@ -101,9 +142,11 @@ public class AnimBarra extends Thread {
                     public void run() {
                         procesoEjec.setText(tabla.getNombreProcesoAct());
                         controlador.mostrar();
+                        avisoBloq.setText("");
+
                     }
                 });
-                if(tabla.tamaño() == 0){
+                if (tabla.tamaño() == 0) {
                     encendido = false;
                 }
             }

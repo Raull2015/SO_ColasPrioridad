@@ -103,6 +103,10 @@ public class Proceso {
         this.prioridad = new SimpleIntegerProperty(  prioridad);
     }
 
+    public void setTiempoBloqueo(int tiempoBloqueo) {
+        this.tiempoBloqueo = tiempoBloqueo;
+    }
+    
     public int getTiempoBloqueo() {
         return tiempoBloqueo;
     }

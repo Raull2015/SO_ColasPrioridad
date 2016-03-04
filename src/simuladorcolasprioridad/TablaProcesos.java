@@ -33,8 +33,8 @@ public class TablaProcesos {
     public Proceso getProcesoAct() {
         return procesoAct;
     }
-    
-    public String getNombreProcesoAct(){
+
+    public String getNombreProcesoAct() {
         return procesoAct.getNombre();
     }
 
@@ -105,23 +105,6 @@ public class TablaProcesos {
     }
 
     /**
-     * Calcula el tiempo en que el proceso se bloqueara.
-     *
-     * @param velocidad El tiempo en milisegundos que dura el Quantum.
-     * @return -1 indica que el proceso no se bloqueó de lo contrario es el
-     * momento en el que se va a bloquear.
-     */
-    public int tiempo_bloqueo(int velocidad) {
-        Random rm = new Random();
-        int probabilidad = rm.nextInt(99) + 1;
-        if (probabilidad < 50) {
-            return -1;
-        } else {
-            return rm.nextInt(999) + 1;
-        }
-    }
-
-    /**
      * Revisa la Prioridad y en base a ella elige el siguiente proceso a
      * ejecutar.
      */
@@ -142,7 +125,7 @@ public class TablaProcesos {
                     }
                 }
             }
-        } else if(prioridad == 1) {
+        } else if (prioridad == 1) {
             numeroEjec++;
             if (numeroEjec == 1) {
                 for (Proceso proceso : listaP) {
@@ -154,11 +137,26 @@ public class TablaProcesos {
                 }
             }
 
+        } else {
+
         }
-        else{
-            
+
+    }
+
+    /**
+     * Calcula el tiempo en que el proceso se bloqueara.
+     *
+     * @return -1 indica que el proceso no se bloqueó de lo contrario es el
+     * momento en el que se va a bloquear.
+     */
+    public int tiempo_bloqueo() {
+        Random rm = new Random();
+        int probabilidad = rm.nextInt(99) + 1;
+        if (probabilidad < 50) {
+            return -1;
+        } else {
+            return rm.nextInt(99) + 1;
         }
-        
     }
 
     /**
@@ -192,6 +190,9 @@ public class TablaProcesos {
      */
     public void bloquear() {
         procesoAct.setBloqueado(true);
+        Random rm = new Random();
+        procesoAct.setTiempoBloqueo(rm.nextInt(2) * velocidad);
+
     }
 
     /**
@@ -204,55 +205,55 @@ public class TablaProcesos {
             procesoAct.agregarDuracionActual(tiempo);
         }
     }
-    
+
     /**
-     * @return - La cantidad de procesos en la lista 
+     * @return - La cantidad de procesos en la lista
      */
-    public int tamaño(){
+    public int tamaño() {
         return listaP.size();
     }
-    
+
     /**
      * Retira los procesos que ya han cumplido su tiempo de ejecucion
      */
-    public void terminar_procesos(){
+    public void terminar_procesos() {
         for (Proceso proc : listaP) {
-            if(proc.getDuracionTotal() <= proc.getDuracionActual()){
+            if (proc.getDuracionTotal() <= proc.getDuracionActual()) {
                 listaP.remove(proc);
-                
-                if(proc.getPrioridad() == 0){
-                    
+
+                if (proc.getPrioridad() == 0) {
+
                     for (Proceso proc2 : listaP) {
-                        if(proc2.getId() != -1){
+                        if (proc2.getId() != -1) {
                             proc2.setPrioridad(0);
                             procesoAct = proc2;
                             numeroEjec = 0;
                             return;
                         }
                     }
-                }
-                else if(proc.getPrioridad() == -1){
+                } else if (proc.getPrioridad() == -1) {
                     for (Proceso proc2 : listaP) {
-                        if(proc2.getPrioridad() == 0){
-                            procesoAct = proc2;
-                        }
+
+                        procesoAct = proc2;
+
                     }
                 }
                 return;
-                
+
             }
         }
     }
-    public void limpiar(){
+
+    public void limpiar() {
         listaP.clear();
         numeroEjec = -1;
     }
-    
+
     @Override
-    public String toString(){
+    public String toString() {
         String lista = "";
         for (Proceso proc : listaP) {
-         lista += proc.toString() + "\n";
+            lista += proc.toString() + "\n";
         }
         return lista;
     }
